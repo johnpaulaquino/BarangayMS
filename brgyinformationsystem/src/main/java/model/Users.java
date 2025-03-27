@@ -13,7 +13,7 @@ import java.util.UUID;
  * @author pj
  */
 public class Users {
-    public String id = UUID.randomUUID().toString();
+    public String id;
     public String firstname;
     public String lastname;
     public String username; 

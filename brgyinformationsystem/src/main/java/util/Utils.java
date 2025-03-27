@@ -8,6 +8,7 @@ package util;
 
 import de.mkammerer.argon2.Argon2;
 import de.mkammerer.argon2.Argon2Factory;
+import java.util.HashMap;
 import model.Users;
 
 /**
@@ -58,5 +59,21 @@ public class Utils {
         }
             
     }
+    public void authenticateUser(String username,String password, HashMap<String, String> data) throws Exception{
+        if(username.isEmpty()){
+            throw new Exception("Username field should not be empty!");
+        }
+        if(password.isEmpty()){
+         throw new Exception("Password field should not be empty!");
+
+        }
+        if(data.isEmpty()){
+            throw new Exception("No user found!");
+        }
+        if(!this.verifyPassword(data.get("password"), password)){
+            throw new Exception("Password is Incorrect!");
+        }
+    }
+    
     
 }

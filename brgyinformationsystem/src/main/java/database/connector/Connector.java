@@ -3,7 +3,7 @@ package database.connector;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import src.RegisterForm;
+import src.LoginForm;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -14,13 +14,12 @@ import src.RegisterForm;
  *
  * @author asus
  */
-public class Connector {
+public class Connector {    
     public static Connection connection(){
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection con = DriverManager.getConnection(
                     "jdbc:mysql://localhost/barangayinformationsystem","root","");
-                System.out.println("COnnected");
             return con;
         } catch (Exception e) {
             System.out.println("Connection Error");
@@ -28,7 +27,7 @@ public class Connector {
         }
     }
     public static void main(String[] args) {
-        new RegisterForm().setVisible(true);
+        new LoginForm().setVisible(true);
    
     }
     

@@ -2,12 +2,15 @@ package src;
 
 
 import database.connector.Connector;
+import database.respositories.ResidentRepository;
 import java.awt.event.KeyEvent;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import util.Utils;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -20,18 +23,21 @@ import javax.swing.JOptionPane;
  */
 public class LoginForm extends javax.swing.JFrame {
 
-    Connection con = null;
-    PreparedStatement pst = null;
+    private Connection con = null;
+    private PreparedStatement pst = null;
     ResultSet rs = null;
-    
+    private Utils util;
+    private ResidentRepository residentRepo;
     public LoginForm() {
         initComponents();
         con = Connector.connection();
+        util = new Utils();
+        residentRepo = new ResidentRepository();
         this.setLocationRelativeTo(null);
     }
     
     public void log(){
-        String a = un.getText(), b = pass.getText();
+        String a = txtUsername.getText(), b = txtPassword.getText();
         try {
             pst = con.prepareStatement("SELECT * FROM users "
                     + "WHERE username = '" + a + "'AND password = '" + b + "'");
@@ -64,12 +70,12 @@ public class LoginForm extends javax.swing.JFrame {
         close = new javax.swing.JLabel();
         mini = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
-        un = new javax.swing.JTextField();
-        pass = new javax.swing.JPasswordField();
-        log = new javax.swing.JButton();
+        txtUsername = new javax.swing.JTextField();
+        txtPassword = new javax.swing.JPasswordField();
+        btnLogin = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        register = new javax.swing.JLabel();
-        pcheck = new javax.swing.JCheckBox();
+        lblRegister = new javax.swing.JLabel();
+        cbShowPass = new javax.swing.JCheckBox();
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -130,61 +136,61 @@ public class LoginForm extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(251, 255, 228));
         jPanel2.setLayout(null);
 
-        un.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        un.setBorder(javax.swing.BorderFactory.createTitledBorder("Username"));
-        un.addKeyListener(new java.awt.event.KeyAdapter() {
+        txtUsername.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        txtUsername.setBorder(javax.swing.BorderFactory.createTitledBorder("Username"));
+        txtUsername.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                unKeyPressed(evt);
+                txtUsernameKeyPressed(evt);
             }
         });
-        jPanel2.add(un);
-        un.setBounds(120, 130, 220, 60);
+        jPanel2.add(txtUsername);
+        txtUsername.setBounds(120, 130, 220, 60);
 
-        pass.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        pass.setBorder(javax.swing.BorderFactory.createTitledBorder("Password"));
-        jPanel2.add(pass);
-        pass.setBounds(120, 200, 220, 50);
+        txtPassword.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        txtPassword.setBorder(javax.swing.BorderFactory.createTitledBorder("Password"));
+        jPanel2.add(txtPassword);
+        txtPassword.setBounds(120, 200, 220, 50);
 
-        log.setBackground(new java.awt.Color(34, 167, 240));
-        log.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        log.setForeground(new java.awt.Color(255, 255, 255));
-        log.setText("Login");
-        log.addActionListener(new java.awt.event.ActionListener() {
+        btnLogin.setBackground(new java.awt.Color(34, 167, 240));
+        btnLogin.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        btnLogin.setForeground(new java.awt.Color(255, 255, 255));
+        btnLogin.setText("Login");
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                logActionPerformed(evt);
+                btnLoginActionPerformed(evt);
             }
         });
-        jPanel2.add(log);
-        log.setBounds(120, 260, 100, 40);
+        jPanel2.add(btnLogin);
+        btnLogin.setBounds(120, 260, 100, 40);
 
         jLabel2.setText("Don't have an account?");
         jPanel2.add(jLabel2);
         jLabel2.setBounds(120, 300, 130, 18);
 
-        register.setForeground(new java.awt.Color(9, 132, 227));
-        register.setText("Create new account");
-        register.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        register.addMouseListener(new java.awt.event.MouseAdapter() {
+        lblRegister.setForeground(new java.awt.Color(9, 132, 227));
+        lblRegister.setText("Create new account");
+        lblRegister.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        lblRegister.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                registerMouseClicked(evt);
+                lblRegisterMouseClicked(evt);
             }
         });
-        jPanel2.add(register);
-        register.setBounds(250, 300, 110, 18);
+        jPanel2.add(lblRegister);
+        lblRegister.setBounds(250, 300, 110, 18);
 
-        pcheck.setText("show password");
-        pcheck.addActionListener(new java.awt.event.ActionListener() {
+        cbShowPass.setText("show password");
+        cbShowPass.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pcheckActionPerformed(evt);
+                cbShowPassActionPerformed(evt);
             }
         });
-        pcheck.addKeyListener(new java.awt.event.KeyAdapter() {
+        cbShowPass.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                pcheckKeyPressed(evt);
+                cbShowPassKeyPressed(evt);
             }
         });
-        jPanel2.add(pcheck);
-        pcheck.setBounds(230, 270, 120, 22);
+        jPanel2.add(cbShowPass);
+        cbShowPass.setBounds(230, 270, 120, 22);
         jPanel2.add(jLabel3);
         jLabel3.setBounds(170, -10, 140, 160);
 
@@ -214,72 +220,66 @@ public class LoginForm extends javax.swing.JFrame {
         this.setState(JFrame.ICONIFIED);
     }//GEN-LAST:event_miniMouseClicked
 
-    private void registerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_registerMouseClicked
+    private void lblRegisterMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblRegisterMouseClicked
         RegisterForm rgf  = new RegisterForm();
         rgf.setVisible(true);
         rgf.pack();
         rgf.setLocationRelativeTo(null);
         rgf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.hide();
-    }//GEN-LAST:event_registerMouseClicked
+    }//GEN-LAST:event_lblRegisterMouseClicked
 
-    private void logActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logActionPerformed
-        String A, B;
-        
-        A = un.getText();
-        B = pass.getText();
-        
-        if (A.isEmpty()){
-            JOptionPane.showMessageDialog(null, "Please Input Username");
-            
-        }else if(B.isEmpty()){
-            JOptionPane.showMessageDialog(null, "Please input Password");
-            
-        }else if(un.getText().equals("Admin") && (pass.getText().equals("123"))){
-            JOptionPane.showMessageDialog(null, "Login Successfully");
-            
-            Interface Login = new Interface();
-            Login.show();
-            dispose();
-            
-        }else{
-            JOptionPane.showMessageDialog(null, "Wrong username or password!", "Message", JOptionPane.ERROR_MESSAGE);
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+
+       
+        String username = txtUsername.getText();
+       String password= txtPassword.getText();
+        HashMap<String, String> data = residentRepo.findResident(username);
+        try {
+            util.authenticateUser(username, password, data);
+            JOptionPane.showMessageDialog(this, "Successfully logged in!");
+            this.setVisible(false);
+            new Interface().setVisible(true);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_logActionPerformed
+        
+        
+    }//GEN-LAST:event_btnLoginActionPerformed
 
-    private void pcheckActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pcheckActionPerformed
-        if(pcheck.isSelected()){
-            pass.setEchoChar((char) 0);
-            pcheck.setText("Hide Password");
+    private void cbShowPassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbShowPassActionPerformed
+        if(cbShowPass.isSelected()){
+            txtPassword.setEchoChar((char) 0);
+            cbShowPass.setText("Hide Password");
         }else{
-            pass.setEchoChar('\u25CF');
-            pcheck.setText("Show Password");
+            txtPassword.setEchoChar('\u25CF');
+            cbShowPass.setText("Show Password");
         }
-    }//GEN-LAST:event_pcheckActionPerformed
+    }//GEN-LAST:event_cbShowPassActionPerformed
 
-    private void pcheckKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_pcheckKeyPressed
+    private void cbShowPassKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cbShowPassKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER){
             log();
         }
         if (evt.getKeyCode() == KeyEvent.VK_UP){
-            un.requestFocus();
+            txtUsername.requestFocus();
         }
         if (evt.getKeyCode() == KeyEvent.VK_DOWN){
-            un.requestFocus();
+            txtUsername.requestFocus();
         }
-    }//GEN-LAST:event_pcheckKeyPressed
+    }//GEN-LAST:event_cbShowPassKeyPressed
 
-    private void unKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_unKeyPressed
+    private void txtUsernameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUsernameKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER){
-            pass.requestFocus();
+            txtPassword.requestFocus();
         }
         if (evt.getKeyCode() == KeyEvent.VK_DOWN){
-            pass.requestFocus();
+            txtPassword.requestFocus();
         }
         if (evt.getKeyCode() == KeyEvent.VK_UP){
-            pass.requestFocus();
+            txtPassword.requestFocus();
         }
-    }//GEN-LAST:event_unKeyPressed
+    }//GEN-LAST:event_txtUsernameKeyPressed
 
     /**
      * @param args the command line arguments
@@ -317,17 +317,17 @@ public class LoginForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnLogin;
+    private javax.swing.JCheckBox cbShowPass;
     private javax.swing.JLabel close;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JButton log;
+    private javax.swing.JLabel lblRegister;
     private javax.swing.JLabel mini;
-    private javax.swing.JPasswordField pass;
-    private javax.swing.JCheckBox pcheck;
-    private javax.swing.JLabel register;
-    private javax.swing.JTextField un;
+    private javax.swing.JPasswordField txtPassword;
+    private javax.swing.JTextField txtUsername;
     // End of variables declaration//GEN-END:variables
 }

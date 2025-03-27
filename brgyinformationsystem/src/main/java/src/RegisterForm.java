@@ -325,6 +325,7 @@ public class RegisterForm extends javax.swing.JFrame {
             this.address.setText("");
             this.calendar.setDate(null);
             
+            
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
