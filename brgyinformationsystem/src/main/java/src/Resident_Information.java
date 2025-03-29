@@ -1,26 +1,52 @@
 package src;
 
-
+import database.respositories.ResidentRepository;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
+import java.sql.ResultSet;
+import java.util.Date;
+import javax.imageio.ImageIO;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.plaf.FileChooserUI;
+import model.ResidentInfo;
+import util.Utils;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
 /**
  *
  * @author asus
  */
 public class Resident_Information extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Resident_Information
-     */
+    private String sex = null;
+    private ButtonGroup btgSex = new ButtonGroup();
+    private ResidentInfo rInfo;
+    private ResidentRepository rRepo;
+    private Utils utils;
+    private String filepath;
+    private Date bday;
+    private int age;
+
     public Resident_Information() {
         initComponents();
+
+        btgSex.add(cbMale);
+        btgSex.add(cbFemale);
+        rRepo = new ResidentRepository();
+        utils = new Utils();
+        this.retrieveResidentInfo();
+
     }
 
     /**
@@ -35,23 +61,23 @@ public class Resident_Information extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel11 = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        btnResidentInfo = new javax.swing.JButton();
+        btnDashboard = new javax.swing.JButton();
+        btnDocument = new javax.swing.JButton();
+        btnBlotter = new javax.swing.JButton();
         jPanel5 = new javax.swing.JPanel();
         jPanel10 = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        jTextField4 = new javax.swing.JTextField();
-        jComboBox3 = new javax.swing.JComboBox<>();
-        jLabel12 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jCheckBox1 = new javax.swing.JCheckBox();
-        jCheckBox2 = new javax.swing.JCheckBox();
-        jButton2 = new javax.swing.JButton();
+        txtFname = new javax.swing.JTextField();
+        txtLname = new javax.swing.JTextField();
+        txtMname = new javax.swing.JTextField();
+        cboPoblacion = new javax.swing.JComboBox<>();
+        txtAge = new javax.swing.JTextField();
+        cboCivilStatus = new javax.swing.JComboBox<>();
+        lblProfileImage = new javax.swing.JLabel();
+        btnUpload = new javax.swing.JButton();
+        cbMale = new javax.swing.JCheckBox();
+        cbFemale = new javax.swing.JCheckBox();
+        btnSave = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -80,32 +106,32 @@ public class Resident_Information extends javax.swing.JFrame {
 
         jPanel11.setBackground(new java.awt.Color(76, 175, 152));
 
-        jButton3.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
-        jButton3.setText("Resident Information");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnResidentInfo.setFont(new java.awt.Font("Segoe UI", 0, 10)); // NOI18N
+        btnResidentInfo.setText("Resident Information");
+        btnResidentInfo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnResidentInfoActionPerformed(evt);
             }
         });
 
-        jButton4.setText("Dashboard");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        btnDashboard.setText("Dashboard");
+        btnDashboard.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                btnDashboardActionPerformed(evt);
             }
         });
 
-        jButton5.setText("Document");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
+        btnDocument.setText("Document");
+        btnDocument.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
+                btnDocumentActionPerformed(evt);
             }
         });
 
-        jButton6.setText("Blotter");
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
+        btnBlotter.setText("Blotter");
+        btnBlotter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
+                btnBlotterActionPerformed(evt);
             }
         });
 
@@ -113,35 +139,44 @@ public class Resident_Information extends javax.swing.JFrame {
 
         jPanel10.setBackground(new java.awt.Color(61, 141, 122));
 
-        jTextField1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "First name"));
+        txtFname.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "First name"));
 
-        jTextField2.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Last name"));
+        txtLname.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Last name"));
 
-        jTextField3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Middle name"));
+        txtMname.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Middle name"));
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-Select-", "1", "2", "3", "4", "5" }));
-        jComboBox2.setBorder(javax.swing.BorderFactory.createTitledBorder("Poblacion"));
+        cboPoblacion.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-Select-", "1", "2", "3", "4", "5" }));
+        cboPoblacion.setBorder(javax.swing.BorderFactory.createTitledBorder("Poblacion"));
 
-        jTextField4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Age"));
+        txtAge.setEditable(false);
+        txtAge.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)), "Age"));
+        txtAge.setRequestFocusEnabled(false);
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-Select-", "Signal", "mereds", " " }));
-        jComboBox3.setBorder(javax.swing.BorderFactory.createTitledBorder("Civil Status"));
+        cboCivilStatus.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-Select-", "Signal", "mereds", "" }));
+        cboCivilStatus.setBorder(javax.swing.BorderFactory.createTitledBorder("Civil Status"));
 
-        jLabel12.setBackground(new java.awt.Color(0, 0, 0));
-        jLabel12.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
+        lblProfileImage.setBackground(new java.awt.Color(0, 0, 0));
+        lblProfileImage.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
 
-        jButton1.setText("Upload");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnUpload.setText("Upload");
+        btnUpload.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnUploadActionPerformed(evt);
             }
         });
 
-        jCheckBox1.setText("Male");
+        cbMale.setBackground(new java.awt.Color(61, 141, 122));
+        cbMale.setText("Male");
 
-        jCheckBox2.setText("Female");
+        cbFemale.setBackground(new java.awt.Color(61, 141, 122));
+        cbFemale.setText("Female");
 
-        jButton2.setText("Save");
+        btnSave.setText("Save");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
         jPanel10.setLayout(jPanel10Layout);
@@ -150,33 +185,33 @@ public class Resident_Information extends javax.swing.JFrame {
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addGap(35, 35, 35)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtAge, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtLname, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtFname, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtMname, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblProfileImage, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(93, 93, 93))
                     .addGroup(jPanel10Layout.createSequentialGroup()
                         .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel10Layout.createSequentialGroup()
                                 .addGap(35, 35, 35)
                                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(cboCivilStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(cboPoblacion, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel10Layout.createSequentialGroup()
                                 .addGap(144, 144, 144)
-                                .addComponent(jButton1)))
+                                .addComponent(btnUpload)))
                         .addContainerGap(29, Short.MAX_VALUE))))
             .addGroup(jPanel10Layout.createSequentialGroup()
                 .addGap(84, 84, 84)
-                .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cbMale, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jCheckBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cbFemale, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(121, 121, 121))
         );
         jPanel10Layout.setVerticalGroup(
@@ -185,28 +220,28 @@ public class Resident_Information extends javax.swing.JFrame {
                 .addContainerGap(26, Short.MAX_VALUE)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtLname, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtFname, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel10Layout.createSequentialGroup()
-                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblProfileImage, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(10, 10, 10)
-                        .addComponent(jButton1)
+                        .addComponent(btnUpload)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cboCivilStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtMname, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cboPoblacion, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtAge, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jCheckBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(95, Short.MAX_VALUE))
+                    .addComponent(cbFemale, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbMale, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSave, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(56, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -232,15 +267,15 @@ public class Resident_Information extends javax.swing.JFrame {
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel11Layout.createSequentialGroup()
                 .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnBlotter, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(jPanel11Layout.createSequentialGroup()
                             .addContainerGap()
-                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnDashboard, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel11Layout.createSequentialGroup()
                             .addGap(23, 23, 23)
-                            .addComponent(jButton3))))
+                            .addComponent(btnResidentInfo))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
@@ -249,17 +284,17 @@ public class Resident_Information extends javax.swing.JFrame {
             jPanel11Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel11Layout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnDashboard, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnResidentInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnDocument, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnBlotter, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel11Layout.createSequentialGroup()
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 1, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -277,48 +312,88 @@ public class Resident_Information extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, 515, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnResidentInfoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnResidentInfoActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+    }//GEN-LAST:event_btnResidentInfoActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        Interface inter  = new Interface();
+    private void btnDashboardActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDashboardActionPerformed
+        Interface inter = new Interface();
         inter.setVisible(true);
         inter.pack();
         inter.setLocationRelativeTo(null);
         inter.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.hide();
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_btnDashboardActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        Document doc  = new Document();
+    private void btnDocumentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDocumentActionPerformed
+        Document doc = new Document();
         doc.setVisible(true);
         doc.pack();
         doc.setLocationRelativeTo(null);
         doc.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.hide();
 
-    }//GEN-LAST:event_jButton5ActionPerformed
+    }//GEN-LAST:event_btnDocumentActionPerformed
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+    private void btnBlotterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBlotterActionPerformed
         Blotter blo = new Blotter();
         blo.setVisible(true);
         blo.pack();
         blo.setLocationRelativeTo(null);
         blo.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.hide();
-    }//GEN-LAST:event_jButton6ActionPerformed
+    }//GEN-LAST:event_btnBlotterActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnUploadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUploadActionPerformed
         var fileChooser = new JFileChooser();
-    }//GEN-LAST:event_jButton1ActionPerformed
+        int returnValue = fileChooser.showOpenDialog(this);
+
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
+            var fileChoose = fileChooser.getSelectedFile();
+            this.filepath = fileChoose.getAbsolutePath();
+
+        }
+
+        utils.setImage(lblProfileImage, filepath);
+
+    }//GEN-LAST:event_btnUploadActionPerformed
+
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+
+        if (btgSex.isSelected(cbMale.getModel())) {
+            sex = "Male";
+        } else if (btgSex.isSelected(cbFemale.getModel())) {
+            sex = "Female";
+        }
+        String fname = txtFname.getText();
+        String lname = txtLname.getText();
+        String mname = txtMname.getText();
+
+        String civiStatus = cboCivilStatus.getSelectedItem().toString();
+        String poblacion = cboPoblacion.getSelectedItem().toString();
+        String userId = utils.readUserIdInFile();
+
+        System.out.println(filepath);
+
+        try (FileInputStream fis = new FileInputStream(new File(filepath))) {
+            rInfo = new ResidentInfo(userId, fname, mname, lname, age, fis, civiStatus, poblacion, sex);
+            rRepo.updateResidentInfo(rInfo);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+
+        }
+
+
+    }//GEN-LAST:event_btnSaveActionPerformed
 
     /**
      * @param args the command line arguments
@@ -355,26 +430,76 @@ public class Resident_Information extends javax.swing.JFrame {
         });
     }
 
+    private void retrieveResidentInfo() {
+        try (ResultSet rs = rRepo.getResidentInfo()) {
+            System.out.println(rs.isClosed());
+            if (rs.next()) {
+                bday = rs.getDate("u.birth_date");
+                System.out.println(bday);
+                txtLname.setText(rs.getString("r.lastname"));
+
+
+                txtFname.setText(rs.getString("r.firstname"));
+
+
+                txtMname.setText(rs.getString("r.middlename"));
+                
+                age = utils.calculateAge(bday);
+                txtAge.setText(String.valueOf(age));
+                System.out.println("hey");
+
+                if (rs.getString("r.sex").equals("Male")) {
+                    cbMale.setSelected(true);
+                } else if (rs.getString("r.sex").equals("Female")) {
+                    cbFemale.setSelected(true);
+                }
+
+                Blob blob = rs.getBlob("r.profile_img");
+                
+                if (blob.length() > 0) {
+                    InputStream inputStream = blob.getBinaryStream();
+                    ByteArrayInputStream byteArray = new ByteArrayInputStream(inputStream.readAllBytes());
+
+                    BufferedImage origImage = ImageIO.read(byteArray);
+
+                    Image scaledImage = origImage.
+                            getScaledInstance(lblProfileImage.getWidth(),
+                                    lblProfileImage.getHeight(), Image.SCALE_SMOOTH);
+
+                    lblProfileImage.setIcon(new ImageIcon(scaledImage));
+                }
+                if (!rs.getString("r.civil_status").isEmpty()) {
+                    cboCivilStatus.setSelectedItem(rs.getString("r.civil_status"));
+                }
+                if (!rs.getString("r.poblacion").isEmpty()) {
+                    cboPoblacion.setSelectedItem(rs.getString("r.poblacion"));
+                }
+
+            }
+        } catch (Exception e) {
+        }
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JComboBox<String> jComboBox3;
+    private javax.swing.JButton btnBlotter;
+    private javax.swing.JButton btnDashboard;
+    private javax.swing.JButton btnDocument;
+    private javax.swing.JButton btnResidentInfo;
+    private javax.swing.JButton btnSave;
+    private javax.swing.JButton btnUpload;
+    private javax.swing.JCheckBox cbFemale;
+    private javax.swing.JCheckBox cbMale;
+    private javax.swing.JComboBox<String> cboCivilStatus;
+    private javax.swing.JComboBox<String> cboPoblacion;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel5;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
+    private javax.swing.JLabel lblProfileImage;
+    private javax.swing.JTextField txtAge;
+    private javax.swing.JTextField txtFname;
+    private javax.swing.JTextField txtLname;
+    private javax.swing.JTextField txtMname;
     // End of variables declaration//GEN-END:variables
 }

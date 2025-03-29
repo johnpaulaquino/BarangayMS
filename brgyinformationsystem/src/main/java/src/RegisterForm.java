@@ -1,6 +1,5 @@
 package src;
 
-
 import com.toedter.calendar.JDateChooser;
 import database.respositories.ResidentRepository;
 import java.sql.Connection;
@@ -20,7 +19,6 @@ import util.Utils;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-
 /**
  *
  * @author asus
@@ -34,16 +32,17 @@ public class RegisterForm extends javax.swing.JFrame {
     private JDateChooser calendar = new JDateChooser();
     private Users users;
     private Utils utils;
-    private ResidentRepository residentRepo;  
+    private ResidentRepository residentRepo;
+
     public RegisterForm() {
         initComponents();
         this.setLocationRelativeTo(null);
-        calendar.setDateFormatString("yyyy-MM-dd"); 
+        calendar.setDateFormatString("yyyy-MM-dd");
         calendar.setBounds(180, 230, 260, 30);
         jPanel2.add(calendar);
         residentRepo = new ResidentRepository();
         utils = new Utils();
-      
+
     }
 
     /**
@@ -289,7 +288,7 @@ public class RegisterForm extends javax.swing.JFrame {
     }//GEN-LAST:event_miniMouseClicked
 
     private void registerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_registerMouseClicked
-        LoginForm lgf  = new LoginForm();
+        LoginForm lgf = new LoginForm();
         lgf.setVisible(true);
         lgf.pack();
         lgf.setLocationRelativeTo(null);
@@ -302,17 +301,17 @@ public class RegisterForm extends javax.swing.JFrame {
     }//GEN-LAST:event_firstnameActionPerformed
 
     private void createActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createActionPerformed
-        
+
         Date bday = calendar.getDate();
         String fname = this.firstname.getText();
         String lname = this.lastname.getText();
         String username = this.user.getText();
         String pass = this.password.getText();
         String rePass = this.retype.getText();
-          String addre = this.address.getText();
+        String addre = this.address.getText();
 
-        users = new Users(fname,lname,username,pass,rePass,bday,addre);
-       
+        users = new Users(fname, lname, username, pass, rePass, bday, addre);
+
         try {
             utils.validateRegistrationForm(users); // Validate Fields
             residentRepo.createUser(users);
@@ -324,15 +323,14 @@ public class RegisterForm extends javax.swing.JFrame {
             this.retype.setText("");
             this.address.setText("");
             this.calendar.setDate(null);
-            
-            
+
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_createActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        JOptionPane.showMessageDialog(this,"Are you sure to cancel");   
+        JOptionPane.showMessageDialog(this, "Are you sure to cancel");
         System.exit(0);
     }//GEN-LAST:event_jButton2ActionPerformed
 

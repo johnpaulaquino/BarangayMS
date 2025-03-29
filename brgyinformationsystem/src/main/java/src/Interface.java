@@ -1,8 +1,11 @@
 package src;
 
 
+import database.respositories.ResidentRepository;
+import java.sql.ResultSet;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -18,9 +21,16 @@ public class Interface extends javax.swing.JFrame {
     /**
      * Creates new form Interface
      */
+    private ResidentRepository residentRepo;
     public Interface() {
         initComponents();
         this.setLocationRelativeTo(null);
+        residentRepo = new ResidentRepository();
+        this.setDataInTable();
+        lblPopulationNo.setText(residentRepo.getPopulation());
+        lblPopulationNo1.setText(residentRepo.getPopulation());
+        lblTotalHouseholds.setText(residentRepo.getTotalHouseHolds());
+
     }
 
     /**
@@ -42,19 +52,19 @@ public class Interface extends javax.swing.JFrame {
         jPanel12 = new javax.swing.JPanel();
         out1 = new javax.swing.JButton();
         jScrollPane4 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
+        tblInformation = new javax.swing.JTable();
         jPanel13 = new javax.swing.JPanel();
         jLabel13 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
+        lblPopulationNo = new javax.swing.JLabel();
         jPanel14 = new javax.swing.JPanel();
         jLabel15 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
+        lblTotalHouseholds = new javax.swing.JLabel();
         jPanel15 = new javax.swing.JPanel();
         jLabel17 = new javax.swing.JLabel();
         jLabel18 = new javax.swing.JLabel();
         jPanel16 = new javax.swing.JPanel();
         jLabel19 = new javax.swing.JLabel();
-        jLabel20 = new javax.swing.JLabel();
+        lblPopulationNo1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -155,15 +165,13 @@ public class Interface extends javax.swing.JFrame {
             }
         });
 
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+        tblInformation.setFont(new java.awt.Font("Liberation Sans", 0, 12)); // NOI18N
+        tblInformation.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Id", "Firstname", "Lastname", "Address"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -174,7 +182,17 @@ public class Interface extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane4.setViewportView(jTable3);
+        tblInformation.getTableHeader().setReorderingAllowed(false);
+        jScrollPane4.setViewportView(tblInformation);
+        if (tblInformation.getColumnModel().getColumnCount() > 0) {
+            tblInformation.getColumnModel().getColumn(0).setResizable(false);
+            tblInformation.getColumnModel().getColumn(0).setPreferredWidth(15);
+            tblInformation.getColumnModel().getColumn(1).setResizable(false);
+            tblInformation.getColumnModel().getColumn(1).setPreferredWidth(50);
+            tblInformation.getColumnModel().getColumn(2).setResizable(false);
+            tblInformation.getColumnModel().getColumn(2).setPreferredWidth(50);
+            tblInformation.getColumnModel().getColumn(3).setResizable(false);
+        }
 
         jPanel13.setBackground(new java.awt.Color(61, 141, 122));
 
@@ -182,9 +200,9 @@ public class Interface extends javax.swing.JFrame {
         jLabel13.setForeground(new java.awt.Color(255, 255, 255));
         jLabel13.setText("Total of Population");
 
-        jLabel14.setFont(new java.awt.Font("Segoe UI", 1, 30)); // NOI18N
-        jLabel14.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel14.setText("0");
+        lblPopulationNo.setFont(new java.awt.Font("Segoe UI", 1, 30)); // NOI18N
+        lblPopulationNo.setForeground(new java.awt.Color(255, 255, 255));
+        lblPopulationNo.setText("0");
 
         javax.swing.GroupLayout jPanel13Layout = new javax.swing.GroupLayout(jPanel13);
         jPanel13.setLayout(jPanel13Layout);
@@ -194,7 +212,7 @@ public class Interface extends javax.swing.JFrame {
                 .addGroup(jPanel13Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel13Layout.createSequentialGroup()
                         .addGap(83, 83, 83)
-                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(lblPopulationNo, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel13Layout.createSequentialGroup()
                         .addGap(14, 14, 14)
                         .addComponent(jLabel13)))
@@ -206,7 +224,7 @@ public class Interface extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel13)
                 .addGap(35, 35, 35)
-                .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblPopulationNo, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(46, Short.MAX_VALUE))
         );
 
@@ -216,9 +234,9 @@ public class Interface extends javax.swing.JFrame {
         jLabel15.setForeground(new java.awt.Color(255, 255, 255));
         jLabel15.setText("Total House Hold");
 
-        jLabel16.setFont(new java.awt.Font("Segoe UI", 1, 30)); // NOI18N
-        jLabel16.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel16.setText("0");
+        lblTotalHouseholds.setFont(new java.awt.Font("Segoe UI", 1, 30)); // NOI18N
+        lblTotalHouseholds.setForeground(new java.awt.Color(255, 255, 255));
+        lblTotalHouseholds.setText("0");
 
         javax.swing.GroupLayout jPanel14Layout = new javax.swing.GroupLayout(jPanel14);
         jPanel14.setLayout(jPanel14Layout);
@@ -230,7 +248,7 @@ public class Interface extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel14Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblTotalHouseholds, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(79, 79, 79))
         );
         jPanel14Layout.setVerticalGroup(
@@ -239,7 +257,7 @@ public class Interface extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel15)
                 .addGap(33, 33, 33)
-                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblTotalHouseholds, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(48, Short.MAX_VALUE))
         );
 
@@ -282,9 +300,9 @@ public class Interface extends javax.swing.JFrame {
         jLabel19.setForeground(new java.awt.Color(255, 255, 255));
         jLabel19.setText("Total of Population");
 
-        jLabel20.setFont(new java.awt.Font("Segoe UI", 1, 30)); // NOI18N
-        jLabel20.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel20.setText("0");
+        lblPopulationNo1.setFont(new java.awt.Font("Segoe UI", 1, 30)); // NOI18N
+        lblPopulationNo1.setForeground(new java.awt.Color(255, 255, 255));
+        lblPopulationNo1.setText("0");
 
         javax.swing.GroupLayout jPanel16Layout = new javax.swing.GroupLayout(jPanel16);
         jPanel16.setLayout(jPanel16Layout);
@@ -294,7 +312,7 @@ public class Interface extends javax.swing.JFrame {
                 .addGroup(jPanel16Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel16Layout.createSequentialGroup()
                         .addGap(83, 83, 83)
-                        .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(lblPopulationNo1, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel16Layout.createSequentialGroup()
                         .addGap(14, 14, 14)
                         .addComponent(jLabel19)))
@@ -306,7 +324,7 @@ public class Interface extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel19)
                 .addGap(30, 30, 30)
-                .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblPopulationNo1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -315,14 +333,14 @@ public class Interface extends javax.swing.JFrame {
         jPanel12Layout.setHorizontalGroup(
             jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel12Layout.createSequentialGroup()
-                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
+                .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel12Layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(out1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel12Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 353, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jPanel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jPanel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -455,6 +473,23 @@ public class Interface extends javax.swing.JFrame {
             }
         });
     }
+    
+    private void setDataInTable(){
+        DefaultTableModel dft = (DefaultTableModel) tblInformation.getModel();
+        dft.setRowCount(0);
+        try( ResultSet rs = residentRepo.getResidentInfo()) {
+
+            while (rs.next()) {     
+                System.out.println(rs.getString("u.id"));
+                dft.addRow(new Object[] {
+                rs.getString("u.id"), rs.getString("r.firstname"),
+                rs.getString("r.lastname"), rs.getString("u.addres")
+                });
+            }
+            
+        } catch (Exception e) {
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton3;
@@ -463,13 +498,10 @@ public class Interface extends javax.swing.JFrame {
     private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel20;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel11;
     private javax.swing.JPanel jPanel12;
@@ -478,7 +510,10 @@ public class Interface extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel15;
     private javax.swing.JPanel jPanel16;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JTable jTable3;
+    private javax.swing.JLabel lblPopulationNo;
+    private javax.swing.JLabel lblPopulationNo1;
+    private javax.swing.JLabel lblTotalHouseholds;
     private javax.swing.JButton out1;
+    private javax.swing.JTable tblInformation;
     // End of variables declaration//GEN-END:variables
 }

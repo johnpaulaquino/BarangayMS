@@ -30,31 +30,12 @@ public class LoginForm extends javax.swing.JFrame {
     private ResidentRepository residentRepo;
     public LoginForm() {
         initComponents();
-        con = Connector.connection();
+        con = Connector.Connect();
         util = new Utils();
         residentRepo = new ResidentRepository();
         this.setLocationRelativeTo(null);
     }
     
-    public void log(){
-        String a = txtUsername.getText(), b = txtPassword.getText();
-        try {
-            pst = con.prepareStatement("SELECT * FROM users "
-                    + "WHERE username = '" + a + "'AND password = '" + b + "'");
-            rs = pst.executeQuery();
-            if (rs.next()){
-                if (a.contentEquals(rs.getString("password"))){
-                    this.dispose();
-                    Interface I = new Interface();
-                    I.setVisible(true);
-                }
-            }else{
-                JOptionPane.showMessageDialog(null, "Access Denied");
-            }
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -138,11 +119,6 @@ public class LoginForm extends javax.swing.JFrame {
 
         txtUsername.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         txtUsername.setBorder(javax.swing.BorderFactory.createTitledBorder("Username"));
-        txtUsername.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                txtUsernameKeyPressed(evt);
-            }
-        });
         jPanel2.add(txtUsername);
         txtUsername.setBounds(120, 130, 220, 60);
 
@@ -182,11 +158,6 @@ public class LoginForm extends javax.swing.JFrame {
         cbShowPass.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 cbShowPassActionPerformed(evt);
-            }
-        });
-        cbShowPass.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                cbShowPassKeyPressed(evt);
             }
         });
         jPanel2.add(cbShowPass);
@@ -239,6 +210,9 @@ public class LoginForm extends javax.swing.JFrame {
             util.authenticateUser(username, password, data);
             JOptionPane.showMessageDialog(this, "Successfully logged in!");
             this.setVisible(false);
+            
+            util.deleteCachedFile(); // Delete all files first
+            util.createTempFiles(data.get("id")); // Then create a new temp files to store the user id
             new Interface().setVisible(true);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -256,30 +230,6 @@ public class LoginForm extends javax.swing.JFrame {
             cbShowPass.setText("Show Password");
         }
     }//GEN-LAST:event_cbShowPassActionPerformed
-
-    private void cbShowPassKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cbShowPassKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER){
-            log();
-        }
-        if (evt.getKeyCode() == KeyEvent.VK_UP){
-            txtUsername.requestFocus();
-        }
-        if (evt.getKeyCode() == KeyEvent.VK_DOWN){
-            txtUsername.requestFocus();
-        }
-    }//GEN-LAST:event_cbShowPassKeyPressed
-
-    private void txtUsernameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtUsernameKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER){
-            txtPassword.requestFocus();
-        }
-        if (evt.getKeyCode() == KeyEvent.VK_DOWN){
-            txtPassword.requestFocus();
-        }
-        if (evt.getKeyCode() == KeyEvent.VK_UP){
-            txtPassword.requestFocus();
-        }
-    }//GEN-LAST:event_txtUsernameKeyPressed
 
     /**
      * @param args the command line arguments
